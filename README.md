@@ -15,6 +15,9 @@
     8. [moveTo & lineTo](#1-8-moveto--lineto)
     9. [굵기 바꾸기 - lineWidth](#1-9-굵기-바꾸기---linewidth)
     10. [arc](#1-10-arc)
+2. [Painting Board](#2-painting-board)
+    1. [offsetX, offsetY](#2-1-offsetx-offsety)
+    2. [mousemove 이벤트](#2-2-mousemove-이벤트)
 
 <br/>
 <br/>
@@ -319,4 +322,71 @@ ctx.stroke();
 <p align="center">
     <img src="README_img/arc.png" width="500"><br/>
     <span>arc로 원, 호 그리기</span>
-</p> 
+</p>
+
+<br/>
+<br/>
+
+## 2. Painting Board
+
+### 2-1. offsetX, offsetY
+
+- canvas에 "Click"의 eventListener를 추가하고 event 콘솔로 출력
+- 캔버스 좌측상단을 기준(0,0) 좌표로 하여 offsetX, offsetY 값을 이벤트 값으로 확인가능
+- `offsetX` : 기준에서 X축의 거리
+- `offsetY` : 기준에서 Y축의 거리
+
+```javascript
+// app.js
+
+function onClick(e) {
+   console.log(e);
+}
+
+canvas.addEventListener("click", onClick);
+```
+
+<br/>
+
+### 2-2. mousemove 이벤트
+
+- 마우스 이동 시, 기준점으로부터 마우스까지의 선이 색상이 바뀌면서 그려지도록하기
+
+```javascript
+// app.js
+
+...
+const colors = [
+   "#ff3838",
+   "#ffb8b8",
+   "#c56cf0",
+   "#ff9f1a",
+   "#fff200",
+   "#32ff7e",
+   "#7efff5",
+];
+
+function onMove(e) {
+   // 색상이 다르게 적용되도록 계속 경로 변경
+   ctx.beginPath();
+   // 기준점 (0, 0)으로 이동
+   ctx.moveTo(0,0);
+   // 색상 랜덤으로 선택
+   const color = colors[Math.floor(Math.random() * colors.length)];
+   // 선스타일 색상 변경
+   ctx.strokeStyle = color;
+   // 기준점에서 마우스 위치까지 선분 생성
+   ctx.lineTo(e.offsetX, e.offsetY);
+   // 선 그리기
+   ctx.stroke();
+}
+
+canvas.addEventListener("mousemove", onMove);
+```
+
+<br/>
+
+<p align="center">
+    <img src="README_img/randomColor_line.gif" width="350"><br/>
+    <span>마우스 이동하면서 랜덤 색상의 선 그리기</span>
+</p>
