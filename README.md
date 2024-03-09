@@ -16,8 +16,10 @@
     9. [굵기 바꾸기 - lineWidth](#1-9-굵기-바꾸기---linewidth)
     10. [arc](#1-10-arc)
 2. [Painting Board](#2-painting-board)
-    1. [offsetX, offsetY](#2-1-offsetx-offsety)
+    1. [마우스 위치 - offsetX, offsetY](#2-1-마우스-위치---offsetx-offsety)
     2. [mousemove 이벤트](#2-2-mousemove-이벤트)
+    3. [기본 그림판 만들기 - mousemove, mousedown, mouseup](#2-3-기본-그림판-만들기---mousemove-mousedown-mouseup)
+    4. [버그 해결 - mouseleave](#2-4-버그-해결---mouseleave)
 
 <br/>
 <br/>
@@ -329,7 +331,7 @@ ctx.stroke();
 
 ## 2. Painting Board
 
-### 2-1. offsetX, offsetY
+### 2-1. 마우스 위치 - offsetX, offsetY
 
 - canvas에 "Click"의 eventListener를 추가하고 event 콘솔로 출력
 - 캔버스 좌측상단을 기준(0,0) 좌표로 하여 offsetX, offsetY 값을 이벤트 값으로 확인가능
@@ -390,3 +392,86 @@ canvas.addEventListener("mousemove", onMove);
     <img src="README_img/randomColor_line.gif" width="350"><br/>
     <span>마우스 이동하면서 랜덤 색상의 선 그리기</span>
 </p>
+
+<br/>
+
+### 2-3. 기본 그림판 만들기 - mousemove, mousedown, mouseup
+
+- `moveTo()`, `lineTo()`, `stroke()`, `mousemove`, `mousedown`, `mouseup`를 사용하여 기본적인 그림판 만들기
+
+```js
+// app.js
+
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = 800;
+canvas.height = 800;
+
+ctx.lineWidth = 2;
+
+// 현재 그림을 그리는 중인지 판단하는 변수 isPainting 생성
+// 초기값 false
+let isPainting = false;
+
+// 마우스가 이동할 때 실행할 함수
+function onMove(e) {
+   // 그림을 그리는 중이면
+   if (isPainting === true) {
+      // 마우스 위치로 선을 생성하고
+      ctx.lineTo(e.offsetX, e.offsetY);
+      // 선을 stroke로 그리기
+      ctx.stroke();
+      return;
+   }
+   // 그림을 그리는 중이 아니면 기준점 이동시키기
+   ctx.moveTo(e.offsetX, e.offsetY);
+}
+
+// 마우스 버튼일 눌릴 때 실행할 함수
+function onMousedown() {
+   // 그림을 그리는 중
+   isPainting = true;
+}
+
+// 마우스 버튼을 뗄 때 실행할 함수
+function onMouseup() {
+   // 그림 그리지 않는 중
+   isPainting = false;
+}
+
+// 마우스가 움직일 때, 마우스 버튼이 눌려있을 때, 마우스 버튼을 뗄 때, 각 이벤트 생성
+canvas.addEventListener("mousemove", onMove);
+canvas.addEventListener("mousedown", onMousedown);
+canvas.addEventListener("mouseup", onMouseup);
+```
+
+<br/>
+
+<p align="center">
+    <img src="README_img/basic_canvas.gif" width="350"><br/>
+    <span>기본적인 그림판</span>
+</p>
+
+- 하지만, 해당 코드에는 문제점이 있음
+- 마우스 버튼을 눌러 그림을 그리는 채로 마우스를 캔버스 밖으로 이동한 뒤, 버튼을 떼고 다시 캔버스로 이동하면 버튼을 누르는 상황이 아님에도 그림이 계속 그려지는 버그 발생
+- 이는 canvas에 한해서 mouseup 이벤트가 생성되어있기 때문에 canvas 밖에서 버튼을 떼는 것을 canvas는 인식하지 못함
+
+<br/>
+
+### 2-4. 버그 해결 - mouseleave
+
+- `canvas`에 `mouseleave` 이벤트를 생성하여 마우스가 떠났을 때를 감지하여 cancelPainting 함수 실행
+- 또는 `document` 자체에 `mouseup` 이벤트를 생성하여 문서에서 항상 마우스를 떼면 cancelPainting 함수 실행
+
+```js
+// app.js
+
+...
+function cancelPainting() {
+   isPainting = false;
+}
+
+canvas.addEventListener("mouseleave", cancelPainting);
+// 또는
+document.addEventListener("mouseup", cancelPainting);
+```
