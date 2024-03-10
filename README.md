@@ -24,6 +24,7 @@
     6. [색상 팔레트 input 만들기 - strokeStyle](#2-6-색상-팔레트-input-만들기---strokestyle)
     7. [색상 선택 옵션 만들기](#2-7-색상-선택-옵션-만들기)
     8. [색상 채우기](#2-8-색상-채우기)
+    9. [초기화 및 지우개](#2-9-초기화-및-지우개)
 
 <br/>
 <br/>
@@ -692,6 +693,80 @@ canvas.addEventListener("click", onCanvasClick);
 <p align="center">
     <img src="README_img/canvas_fill.gif" width="500"><br/>
     <span>그림판 채우기</span>
+</p>
+
+<br/>
+
+### 2-9. 초기화 및 지우개
+
+- 그림판 초기화 버튼 만들기 (= 하얀색으로 채우기)
+- 지우개 모드 버튼 만들기 (= 하얀색으로 선그리기)
+
+<br/>
+
+1. 그림판 초기화
+
+```html
+<!--index.html-->
+
+<button id="destroy-btn">Destroy</button>
+```
+
+```js
+// app.js
+
+...
+const destroyBtn = document.querySelector("#destroy-btn");
+
+...
+const CANVAS_WIDTH = 800;
+const CANVAS_HEIGHT = 800;
+
+...
+function onDestroyClick() {
+   // 채우기 색상 하얀색으로 설정
+   ctx.fillStyle = "white";
+   // 캔버스 사각형 하얀색으로 채우기
+   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+}
+
+destroyBtn.addEventListener("click", onDestroyClick);
+```
+
+<br/>
+
+2. 지우개
+
+```html
+<!--index.html-->
+
+<button id="eraser-btn">Erase</button>
+```
+
+```js
+// app.js
+
+...
+const eraserBtn = document.querySelector("#eraser-btn");
+
+...
+function onEraserClick() {
+   // 선 색상을 하얀색으로 설정
+   ctx.strokeStyle = "white";
+   
+   // 지우개 모드일 경우, Fill모드를 Draw모드로 변경
+   isFilling = false;
+   modeBtn.innerText = "Fill";
+}
+
+eraserBtn.addEventListener("click", onEraserClick);
+```
+
+<br/>
+
+<p align="center">
+    <img src="README_img/canvas_eraser.gif" width="500"><br/>
+    <span>그림판 초기화 및 지우개</span>
 </p>
 
 <br/>
