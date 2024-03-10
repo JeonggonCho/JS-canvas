@@ -23,6 +23,7 @@
     5. [굵기 조절 input 만들기 - line Width](#2-5-굵기-조절-input-만들기---line-width)
     6. [색상 팔레트 input 만들기 - strokeStyle](#2-6-색상-팔레트-input-만들기---strokestyle)
     7. [색상 선택 옵션 만들기](#2-7-색상-선택-옵션-만들기)
+    8. [색상 채우기](#2-8-색상-채우기)
 
 <br/>
 <br/>
@@ -635,3 +636,62 @@ colorOptions.forEach(color => color.addEventListener("click", onColorClick));
     <img src="README_img/canvas_colorOptions.gif" width="500"><br/>
     <span>그림판 브러쉬 색상 옵션 변경</span>
 </p>
+
+<br/>
+
+### 2-8. 색상 채우기
+
+- mode를 Fill과 Draw로 토글 할 수 있는 버튼을 생성하여 Fill 모드에서는 canvas를 클릭하면 전체를 채우고, Draw 모드에서는 기존의 선을 그리는 방식으로 만들기
+
+```html
+<!--index.html-->
+
+<button id="mode-btn">Fill</button>
+```
+
+```js
+// app.js
+
+...
+const modeBtn = document.querySelector("#mode-btn");
+
+...
+// 현재 Fill모드인지 Draw모드인지 확인할 수 있는 isFilling 변수 생성
+let isFilling = false;
+
+...
+// 버튼에 click 이벤트 생성
+// 버튼 클릭 시, 모드 확인 변수 isFilling을 토글하고 버튼의 글자도 바꾸기
+function onModeClick() {
+   if (isFilling) {
+      isFilling = false;
+      modeBtn.innerText = "Fill";
+   } else {
+      isFilling = true;
+      modeBtn.innerText = "Draw";
+   }
+}
+
+modeBtn.addEventListener("click", onModeClick);
+
+
+...
+// 캔버스에 click 이벤트 생성
+// 캔버스 클릭 시, 현재 Fill 모드 이면 캔버스 전체를 fillRect를 이용해 색 채우기
+function onCanvasClick() {
+   if (isFilling) {
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+   }
+}
+
+canvas.addEventListener("click", onCanvasClick);
+```
+
+<br/>
+
+<p align="center">
+    <img src="README_img/canvas_fill.gif" width="500"><br/>
+    <span>그림판 채우기</span>
+</p>
+
+<br/>
