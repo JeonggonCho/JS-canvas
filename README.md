@@ -25,6 +25,12 @@
     7. [색상 선택 옵션 만들기](#2-7-색상-선택-옵션-만들기)
     8. [색상 채우기](#2-8-색상-채우기)
     9. [초기화 및 지우개](#2-9-초기화-및-지우개)
+3. [Meme Maker](#3-meme-maker)
+    1. [이미지 넣기 - drawImage](#3-1-이미지-넣기---drawimage)
+    2. [텍스트 넣기 - strokeText, fillText, font, save, restore](#3-2-텍스트-넣기---stroketext-filltext-font-save-restore)
+    3. [line 끝부분 처리 - lineCap](#3-3-line-끝부분-처리---linecap)
+    4. [line 꺾이는 부분 처리 - lineJoin](#3-4-line-꺾이는-부분-처리---linejoin)
+    5. [생성한 이미지 저장하기 - toDataURL](#3-5-생성한-이미지-저장하기---todataurl)
 
 <br/>
 <br/>
@@ -767,6 +773,193 @@ eraserBtn.addEventListener("click", onEraserClick);
 <p align="center">
     <img src="README_img/canvas_eraser.gif" width="500"><br/>
     <span>그림판 초기화 및 지우개</span>
+</p>
+
+<br/>
+<br/>
+
+## 3. Meme Maker
+
+### 3-1. 이미지 넣기 - drawImage
+
+- 이미지 첨부할 수 있는 file 타입의 input 생성
+- 다른 형식은 첨부할 수 없고 이미지만 첨부 가능하도록 `accept` 속성 추가
+
+```html
+<!--index.html-->
+
+<input id="file" type="file" accept="image/*">
+```
+
+- 브라우저가 로컬 메모리에 있는 이미지를 읽을 수 있도록 하고 싶음
+- `event.target.files[0]`의 파일을 가져와서 변수 생성
+- 해당 변수를 `URL.createObjectURL(파일변수)`로 처리하면 브라우저가 메모리의 이미지에 접근할 수 있는 URL(`blob:http://localhost:xxx 형태`)을 받을 수 있음
+- 해당 URL은 해당 브라우저에서만 유효함
+- 이미지 로드가 완료될 경우 이벤트를 통해 drawImage 메서드 실행
+- `drawImage(image, X, Y, width, height)`로 구성
+  - (X, Y) : 이미지의 좌측상단 좌표
+  - width, height : 이미지의 너비 및 높이
+
+```js
+// app.js
+
+...
+const fileInput = document.querySelector("#file");
+
+...
+function onFileChange(e) {
+   // 첨부된 이미지 파일을 브라우저에서 접근할 수 있는 URL 생성
+   const file = e.target.files[0];
+   const url = URL.createObjectURL(file);
+   
+   // 이미지 요소 만들고 src 속성으로 앞서 생성한 URL 넣기
+   const image = new Image();
+   image.src = url;
+   
+   // 이미지 로드 이벤트 만들기
+   image.onload = function() {
+      // 캔버스에 이미지 넣을 수 있는 drawImage 메서드 사용
+      ctx.drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      // 이미지 넣으면 기존 input으로 첨부한 이미지 제거
+      fileInput.value = null;
+   } 
+}
+
+fileInput.addEventListener("change", onFileChange);
+```
+
+<br/>
+
+<p align="center">
+    <img src="README_img/canvas_adding_image.gif" width="500"><br/>
+    <span>그림판 이미지 넣기</span>
+</p>
+
+<br/>
+
+### 3-2. 텍스트 넣기 - strokeText, fillText, font, save, restore
+
+- text 타입의 input으로 문자열을 받고 해당 문자열을 캔버스에 더블클릭하면 그 위치에 텍스트 넣기
+- `fillText`의 경우, `채워진 글씨`를 넣음, `strokeText`는 테두리 글씨를 넣음
+- fillText(text, X, Y)로 구성됨
+  - text : 캔버스에 넣을 문자열
+  - (X, Y) : 문자열 위치
+- `strokeText()`의 경우, lineWidth의 영향을 받음
+- 따라서, `save()`를 통해 기존 굵기, 색상 등의 `기존 스타일을 저장`(체크포인트)해두고 문자열 스타일을 조정하여 문자삽입한 후, `restore()`로 다시 `원래 스타일`로 롤백시킴
+- `font`를 통해 글자의 크기와 폰트를 조정할 수 있음
+- `ctx.font = "[크기] [폰트스타일]"`로 구성됨
+
+```html
+<!--index.html-->
+
+<input id="text" type="text" placeholder="Write and then double click" />
+```
+
+```js
+// app.js
+
+...
+const textInput = document.querySelector("#text");
+
+...
+function onDoubleClick(e) {
+  // textInput에 작성된 문자열 text로 저장
+  const text = textInput.value;
+  // 작성된 문자열이 있을 경우,
+  if (text !== "") {
+    // 기존 스타일 저장
+    ctx.save();
+    // 선 굵기 1로 조정
+    ctx.lineWidth = 1;
+    // 폰트 스타일 조정
+    ctx.font = "48px serif";
+    // 캔버스에 텍스트 넣기
+    ctx.fillText(text, e.offsetX,e.offsetY);
+    // 다시 원래 스타일로 롤백
+    ctx.restore();
+  }
+}
+
+// 캔버스에 더블클릭 이벤트 생성
+canvas.addEventListener("dblclick", onDoubleClick);
+```
+<br/>
+
+<p align="center">
+    <img src="README_img/canvas_adding_text.gif" width="500"><br/>
+    <span>그림판 텍스트 넣기</span>
+</p>
+
+<br/>
+
+### 3-3. line 끝부분 처리 - lineCap
+
+- lineCap으로 끝부분 설정하기
+  - `round` : 둥글게
+  - `square` : butt에서 좀 더(굵기의 1/2만큼) 연장되게
+  - `butt` : 각지게
+
+```js
+// app.js
+
+ctx.lineCap = "round";
+```
+<br/>
+
+### 3-4. line 꺾이는 부분 처리 - lineJoin
+
+- lineJoin으로 꺾이는 부분 설정하기
+  - `round` : 둥글게
+  - `bevel` : 모따기(chamfer)
+  - `miter` : 뾰족하게
+
+```js
+// app.js
+
+ctx.lineJoin = "round";
+```
+
+<br/>
+
+### 3-5. 생성한 이미지 저장하기 - toDataURL
+
+- 버튼 생성 후, 해당 버튼 클릭 시, 캔버스에 생성된 이미지 저장하기
+- `toDataURL` 메서드를 사용, 해당 메서드는 `캔버스 이미지를 위한 URL을 만들어줌`
+- HTML의 `<a href="URL" download>`를 통해 이미지 다운로드하는 방법을 JavaScript에서 활용하여 다운로드하기
+
+```html
+<!--index.html-->
+
+<button id="save">Save image</button>
+```
+
+```js
+// app.js
+
+...
+const saveBtn = document.querySelector("#save");
+
+...
+function onSaveClick() {
+  // 캔버스 이미지 URL 생성
+  const url = canvas.toDataURL();
+  // 페이크 a태그 생성
+  const a = document.createElement("a");
+  // a태그에 url 연결
+  a.href = url;
+  // a태그의 다운로드 속성에 "기본파일명.확장자" 넣기
+  a.download = "myDrawing.png";
+  // a태그 클릭하기
+  a.click();
+}
+
+saveBtn.addEventListener("click", onSaveClick);
+```
+<br/>
+
+<p align="center">
+    <img src="README_img/canvas_save_image.gif" width="500"><br/>
+    <span>생성한 캔버스 이미지 저장</span>
 </p>
 
 <br/>
