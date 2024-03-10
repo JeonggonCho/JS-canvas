@@ -20,6 +20,9 @@
     2. [mousemove 이벤트](#2-2-mousemove-이벤트)
     3. [기본 그림판 만들기 - mousemove, mousedown, mouseup](#2-3-기본-그림판-만들기---mousemove-mousedown-mouseup)
     4. [버그 해결 - mouseleave](#2-4-버그-해결---mouseleave)
+    5. [굵기 조절 input 만들기 - line Width](#2-5-굵기-조절-input-만들기---line-width)
+    6. [색상 팔레트 input 만들기 - strokeStyle](#2-6-색상-팔레트-input-만들기---strokestyle)
+    7. [색상 선택 옵션 만들기](#2-7-색상-선택-옵션-만들기)
 
 <br/>
 <br/>
@@ -478,7 +481,7 @@ document.addEventListener("mouseup", cancelPainting);
 
 <br/>
 
-### 2-5. line Width
+### 2-5. 굵기 조절 input 만들기 - line Width
 
 - 그림판에서 선 굵기 조절 range 타입 input 만들기
 
@@ -532,4 +535,103 @@ lineWidth.addEventListener("change", onLineWidthChange);
 <p align="center">
     <img src="README_img/canvas_lineWidth.gif" width="350"><br/>
     <span>그림판 브러쉬 굵기 변경</span>
+</p>
+
+<br/>
+
+### 2-6. 색상 팔레트 input 만들기 - strokeStyle
+
+- 그림판에서 색상 조절 color 타입 input 만들기
+
+```html
+<!--index.html-->
+
+<input id="color" type="color" />
+```
+
+```js
+// app.js
+
+...
+const color = document.querySelector("#color");
+
+...
+function onColorChange(e) {
+   ctx.strokeStyle = e.target.value;
+   ctx.fillStyle = e.target.value;
+}
+
+color.addEventListener("change", onColorChange);
+```
+
+<br/>
+
+<p align="center">
+    <img src="README_img/canvas_strokeStyle.gif" width="350"><br/>
+    <span>그림판 브러쉬 색상 변경</span>
+</p>
+
+<br/>
+
+### 2-7. 색상 선택 옵션 만들기
+
+- input외에 색상을 선택할 수 있는 옵션 만들기
+
+```html
+<!--index.html-->
+
+...
+<!--각 요소 옵션의 data-color 속성에 색상 값 담기-->
+<div class="color-option" style="background-color: #1abc9c;" data-color="#1abc9c"></div>
+<div class="color-option" style="background-color: #3498db;" data-color="#3498db"></div>
+<div class="color-option" style="background-color: #34495e;" data-color="#34495e"></div>
+<div class="color-option" style="background-color: #27ae60;" data-color="#27ae60"></div>
+<div class="color-option" style="background-color: #8e44ad;" data-color="#8e44ad"></div>
+<div class="color-option" style="background-color: #f1c40f;" data-color="#f1c40f"></div>
+<div class="color-option" style="background-color: #e74c3c;" data-color="#e74c3c"></div>
+<div class="color-option" style="background-color: #95a5a6;" data-color="#95a5a6"></div>
+<div class="color-option" style="background-color: #d35400;" data-color="#d35400"></div>
+<div class="color-option" style="background-color: #bdc3c7;" data-color="#bdc3c7"></div>
+<div class="color-option" style="background-color: #2ecc71;" data-color="#2ecc71"></div>
+<div class="color-option" style="background-color: #e67e22;" data-color="#e67e22"></div>
+```
+
+```css
+/* style.css */
+
+.color-option {
+   width: 50px;
+   height: 50px;
+   cursor: pointer;
+}
+```
+
+```js
+// app.js
+
+...
+
+// color-option 클래스를 가진 요소를 다 선택하여 배열로 담기
+const colorOptions = Array.from(document.querySelectorAll(".color-option"));
+
+...
+function onColorClick(e) {
+   // HTML에서 담은 data-color="색상" 값 가져오기
+   const colorValue = e.target.dataset.color;
+   ctx.strokeStyle = colorValue;
+   ctx.fillStyle = colorValue;
+   
+   // 어떤 색상을 선택했는지 피드백을 주기위해 color input의 색상도 변경시키기
+   color.value = colorValue;
+}
+
+// 배열인 colorOptions를 forEach로 순회하며 각 요소에 "click" 이벤트 생성
+colorOptions.forEach(color => color.addEventListener("click", onColorClick));
+```
+
+<br/>
+
+<p align="center">
+    <img src="README_img/canvas_colorOptions.gif" width="500"><br/>
+    <span>그림판 브러쉬 색상 옵션 변경</span>
 </p>
