@@ -475,3 +475,61 @@ canvas.addEventListener("mouseleave", cancelPainting);
 // 또는
 document.addEventListener("mouseup", cancelPainting);
 ```
+
+<br/>
+
+### 2-5. line Width
+
+- 그림판에서 선 굵기 조절 range 타입 input 만들기
+
+```html
+<!--index.html-->
+
+<input id="line-width" type="range" min="1" max="10" value="5" step="0.5" />
+```
+
+- input에 `change` 이벤트를 통해 range 값이 변할 때마다 `onLineWidthChange` 함수 실행
+- onLineWidthChange 함수는 슬라이더 값을 캔버스 `브러쉬의 굵기`로 설정
+- 하지만 onLineWidChange 함수까지만 설정하면 그림판에 그려놓은 모든 선들의 굵기가 해당 굵기 값으로 변경되는 버그가 발생함
+- 따라서 그림을 그리지 않고 있는 중인 경우, 그리기가 끝난 경우의 함수에 `beginPath()`를 통해 이전 생성된 선들과의 경로를 끊기
+- 그렇게 하면 버그 해결됨
+
+```js
+// app.js
+
+const lineWidth = document.querySelector("#line-width");
+
+...
+
+ctx.lineWidth = lineWidth.value;
+
+...
+
+function onMove(e) {
+   if (isPainting === true) {
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      return;
+   }
+   ctx.beginPath();
+   ctx.moveTo(e.offsetX, e.offsetY);
+}
+
+function cancelPainting() {
+   isPainting = false;
+   ctx.beginPath();
+}
+
+function onLineWidthChange(e) {
+   ctx.lineWidth = e.target.value;
+}
+
+lineWidth.addEventListener("change", onLineWidthChange);
+```
+
+<br/>
+
+<p align="center">
+    <img src="README_img/canvas_lineWidth.gif" width="350"><br/>
+    <span>그림판 브러쉬 굵기 변경</span>
+</p>
