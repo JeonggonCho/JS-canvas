@@ -74,8 +74,10 @@ function onCanvasClick() {
 }
 
 function onDestroyClick() {
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  if (window.confirm("정말 지우시겠습니까?")) {
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  }
 }
 
 function onEraserClick() {

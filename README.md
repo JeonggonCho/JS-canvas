@@ -847,7 +847,7 @@ fileInput.addEventListener("change", onFileChange);
 - `strokeText()`의 경우, lineWidth의 영향을 받음
 - 따라서, `save()`를 통해 기존 굵기, 색상 등의 `기존 스타일을 저장`(체크포인트)해두고 문자열 스타일을 조정하여 문자삽입한 후, `restore()`로 다시 `원래 스타일`로 롤백시킴
 - `font`를 통해 글자의 크기와 폰트를 조정할 수 있음
-- `ctx.font = "[크기] [폰트스타일]"`로 구성됨
+- `ctx.font = "[스타일] [크기] [폰트종류]"`로 구성됨
 
 ```html
 <!--index.html-->
@@ -872,7 +872,7 @@ function onDoubleClick(e) {
     // 선 굵기 1로 조정
     ctx.lineWidth = 1;
     // 폰트 스타일 조정
-    ctx.font = "48px serif";
+    ctx.font = "bold 48px serif";
     // 캔버스에 텍스트 넣기
     ctx.fillText(text, e.offsetX,e.offsetY);
     // 다시 원래 스타일로 롤백
