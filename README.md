@@ -31,6 +31,7 @@
     3. [line 끝부분 처리 - lineCap](#3-3-line-끝부분-처리---linecap)
     4. [line 꺾이는 부분 처리 - lineJoin](#3-4-line-꺾이는-부분-처리---linejoin)
     5. [생성한 이미지 저장하기 - toDataURL](#3-5-생성한-이미지-저장하기---todataurl)
+    6. [CSS 스타일](#3-6-css-스타일)
 
 <br/>
 <br/>
@@ -963,3 +964,152 @@ saveBtn.addEventListener("click", onSaveClick);
 </p>
 
 <br/>
+
+### 3-6. CSS 스타일
+
+- reset.css를 통해 스타일 초기화 한 후, 적절하게 스타일링하기
+
+```css
+/*reset.css*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+```
+
+```css
+/*style.css*/
+
+@import "reset.css";
+
+body {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: gainsboro;
+    padding: 20px;
+    font-family: -apple-system;
+}
+
+canvas {
+    width: 800px;
+    height: 800px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btns {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.color-options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.color-option {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 5px solid white;
+    transition: transform ease-in .1s;
+}
+
+.color-option:hover {
+    transform: scale(1.2);
+}
+
+input#color {
+    background-color: white;
+}
+
+button,
+label {
+    all: unset;
+    padding: 10px;
+    text-align: center;
+    background-color: royalblue;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: opacity linear .1s;
+}
+
+button:hover,
+label:hover {
+    opacity: 0.85;
+}
+
+input#file {
+    display: none;
+}
+
+input#text {
+    all: unset;
+    padding: 10px;
+    text-align: center;
+    border-radius: 10px;
+    font-weight: 500;
+    background-color: white;
+}
+```
+
+<br/>
+
+<p align="center">
+    <img src="README_img/style.png" width="500"><br/>
+    <span>그림판 스타일링</span>
+</p>
